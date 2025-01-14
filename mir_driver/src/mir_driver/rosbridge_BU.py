@@ -35,9 +35,7 @@ import time
 
 import string
 import random
-import rospy
 
-import ssl
 
 class RosbridgeSetup:
     def __init__(self, host, port):
@@ -175,66 +173,42 @@ class RosbridgeSetup:
 
 class RosbridgeWSConnection:
     def __init__(self, host, port):
-        websocket.enableTrace(True)
-        ws_url = "ws://%s:%d/" % (host, port)
         self.ws = websocket.WebSocketApp(
-            ws_url,
-            on_message=lambda ws, msg: self.on_message(msg),
-            on_error=lambda ws, err: self.on_error(err),
-            on_close=lambda ws, code, msg: self.on_close(code, msg),
-            on_open=lambda ws: self.on_open(),
+            ("ws://%s:%d/" % (host, port)), on_message=self.on_message, on_error=self.on_error, on_close=self.on_close
         )
+        self.ws.on_open = self.on_open
         self.run_thread = threading.Thread(target=self.run)
-        self.run_thread.daemon = True
+        self.run_thread.start()
         self.connected = False
         self.errored = False
         self.callbacks = []
-        self.run_thread.start()
-
-    def on_message(self, message):
-        for callback in self.callbacks:
-            callback(message)
-
-    def on_error(self, error):
-        rospy.logerr("Websocket error: %s", str(error))
-        self.errored = True
-
-    def on_close(self, close_status_code, close_msg):
-        rospy.logwarn("Websocket connection closed: %s (%s)", close_msg, close_status_code)
-        self.connected = False
 
     def on_open(self):
-        rospy.loginfo("Websocket connection established")
+        print("### ROS bridge connected ###")
         self.connected = True
-        self.errored = False
-
-    def run(self, *args):
-        while not rospy.is_shutdown():
-            try:
-                self.ws.run_forever(
-                    ping_interval=10,
-                    ping_timeout=5,
-                    skip_utf8_validation=True
-                )
-                if rospy.is_shutdown():
-                    break
-                if not self.errored:
-                    rospy.sleep(1.0)
-            except Exception as e:
-                rospy.logerr("Websocket exception: %s", str(e))
-                if rospy.is_shutdown():
-                    break
-                rospy.sleep(1.0)
 
     def sendString(self, message):
         if not self.connected:
-            rospy.logerr("Error: not connected, could not send message")
+            print("Error: not connected, could not send message")
+            # TODO: throw exception
         else:
-            try:
-                self.ws.send(message)
-            except Exception as e:
-                rospy.logerr("Failed to send message: %s", str(e))
-                self.errored = True
+            self.ws.send(message)
+
+    def on_error(self, error):
+        self.errored = True
+        print("Error: %s" % error)
+
+    def on_close(self):
+        self.connected = False
+        print("### ROS bridge closed ###")
+
+    def run(self, *args):
+        self.ws.run_forever()
+
+    def on_message(self, message):
+        # Call the handlers
+        for callback in self.callbacks:
+            callback(message)
 
     def registerCallback(self, callback):
         self.callbacks.append(callback)

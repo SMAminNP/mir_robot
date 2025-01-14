@@ -1,0 +1,12 @@
+<launch>
+    <!-- Launch the send_goal node -->
+    <node name="send_goal" pkg="mir_navigation" type="move_mir8.py" output="screen">
+    </node>
+
+    <!-- Launch the odometry_recorder node -->
+    <node name="odometry_recorder" pkg="mir_navigation" type="recording.py" output="screen">
+        <!-- Optional: Pass a parameter for the CSV file name -->
+    </node>
+</launch>
+
+

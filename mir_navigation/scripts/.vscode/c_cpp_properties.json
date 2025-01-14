@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/amin/Project/Accurecy_test/MiR/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/amin/Project/Accurecy_test/MiR/catkin_ws/src/mir_robot/mir_dwb_critics/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

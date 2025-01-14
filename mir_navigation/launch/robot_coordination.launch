@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!--Launch Octoprint Node-->
+  <node name="octoprint_status_publisher" pkg="mir_navigation" type="octoprint_status_v3.py" output="screen" />
+  
+  <!-- Launch UR1 Robot Node -->
+  <node name="ur1_robot_node" pkg="mir_navigation" type="ur1_robot_node.py" output="screen">
+    <param name="ur1_ip_address" value="10.1.1.3" />
+  </node>
+
+    <!-- Launch UR2 Robot Node -->
+  <node name="ur2_robot_node" pkg="mir_navigation" type="ur2_robot_node.py" output="screen">
+    <param name="ur2_ip_address" value="10.1.1.1" />
+  </node>
+
+  <!-- Launch Robotiq Gripper Node1 -->
+  <node name="robotiq_gripper_node_1" pkg="mir_navigation" type="robotiq_gripper_node_1.py" output="screen">
+    <param name="gripper_ip" value="10.1.1.3" />
+    <param name="gripper_port" value="63352" />
+  </node>
+
+    <!-- Launch Robotiq Gripper Node2 -->
+  <node name="robotiq_gripper_node_2" pkg="mir_navigation" type="robotiq_gripper_node_2.py" output="screen">
+    <param name="gripper_ip" value="10.1.1.1" />
+    <param name="gripper_port" value="63352" />
+  </node>
+
+  <!-- Launch MiR Platform Node -->
+  <node name="mir_platform_node" pkg="mir_navigation" type="mir_platform_node.py" output="screen" />
+
+  <!-- Launch Behavior Tree Node -->
+  <node name="behavior_tree_node" pkg="mir_navigation" type="behavior_tree_node.py" output="screen" />
+
+  <!-- Launch main node to start the behavior tree -->
+  <node name="bt_main_node" pkg="mir_navigation" type="BT_main.py" output="screen" />
+</launch>
